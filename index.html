@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase</title>
+</head>
+
+<body>
+    <h1>Área de registro</h1>
+    <input type="email" name="" id="email" placeholder="Introduce tu email">
+    <input type="password" name="password" id="password" placeholder="Introduce un password">
+    <input type="button" value="Enviar" onclick="enviar()">
+
+    <h1>Área de acceso</h1>
+    <input type="email" name="" id="emailA" placeholder="Introduce tu email">
+    <input type="password" name="password" id="passwordA" placeholder="Introduce un password">
+    <input type="button" value="Acceso" onclick="acceder()">
+
+
+
+    <h1 id="login"></h1>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-auth.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-analytics.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        var firebaseConfig = {
+            apiKey: "AIzaSyCUtDIPcE7unN1DarrYVOsycqhukxWd_ug",
+            authDomain: "usuarios-9f712.firebaseapp.com",
+            databaseURL: "https://usuarios-9f712.firebaseio.com",
+            projectId: "usuarios-9f712",
+            storageBucket: "usuarios-9f712.appspot.com",
+            messagingSenderId: "921196921337",
+            appId: "1:921196921337:web:ead3befd3d701697057d28",
+            measurementId: "G-WLGTNTHEYJ"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                // User is signed in.
+                var displayName = user.displayName;
+                var email = user.email;
+                var emailVerified = user.emailVerified;
+                var photoURL = user.photoURL;
+                var isAnonymous = user.isAnonymous;
+                var uid = user.uid;
+                var providerData = user.providerData;
+                document.getElementById('login').innerHTML = `
+                <p>Logueado ${user.email} </p>
+                <button onClick="cerrar()">Cerra sesión</button>
+                `;
+                console.info(user);
+                // ...
+            } else {
+                // User is signed out.
+                document.getElementById('login').innerHTML = `No Logueado`;
+            }
+        });
+
+        function enviar() {
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+            firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
+                let errorCode = error.code;
+                let errorMessage = error.message;
+                console.log(errorMessage);
+            });
+        }
+
+        function acceder() {
+            let email = document.getElementById('emailA').value;
+            let password = document.getElementById('passwordA').value;
+            firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+                // Handle Errors here.
+                let errorCode = error.code;
+                let errorMessage = error.message;
+                console.log(errorMessage);
+            });
+        }
+
+        function cerrar() {
+            firebase.auth().signOut().then(function () {
+                // Sign-out successful.
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+    </script>
+</body>
+
+</html>
