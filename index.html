@@ -55,9 +55,10 @@
                 var photoURL = user.photoURL;
                 var isAnonymous = user.isAnonymous;
                 var uid = user.uid;
+                let textoVerificado = emailVerified ? 'Email verificado' : 'Email no verficado';
                 var providerData = user.providerData;
                 document.getElementById('login').innerHTML = `
-                <p>Logueado ${user.email} </p>
+                <p>Logueado ${user.email}<br> ${textoVerificado}</p>
                 <button onClick="cerrar()">Cerra sesión</button>
                 `;
                 console.info(user);
@@ -71,10 +72,24 @@
         function enviar() {
             let email = document.getElementById('email').value;
             let password = document.getElementById('password').value;
-            firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+            .catch(function (error) {
                 let errorCode = error.code;
                 let errorMessage = error.message;
                 console.log(errorMessage);
+            })
+            .then(function() {
+                verficar();
+            });
+        }
+
+        function verficar() {
+            var user = firebase.auth().currentUser;
+
+            user.sendEmailVerification().then(function () {
+                // Email sent.
+            }).catch(function (error) {
+                // An error happened.
             });
         }
 
